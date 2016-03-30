@@ -36,7 +36,6 @@ def open_telnet_conn(ip):
         userfile.close()
         print "username: ", username
         print "password: ", password
-        print "test"
         
         
         
