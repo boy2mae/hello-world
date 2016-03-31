@@ -94,7 +94,7 @@ def open_telnet_conn(ip):
 
      
             for ip in ip_neighbor:
-                print "\n\n**********************main ip neighbor call : ", ip
+                
                 ciscotelnet(ip, connection)
                              
             
@@ -153,12 +153,12 @@ def ciscotelnet(ip,connection):
 
         for ip3 in ip_neighbor:
             if ip3 not in visited_ip:
-                print "\n NEXT IP 2 = ", ip3 
-                print "$$$$$$$$$$$$$$$$$$$$RECURSIVE CALL$$$$$$$$$$$$$$$$$$$$$$$$"
+                #print "\n NEXT IP 2 = ", ip3 
+                #print "$$$$$$$$$$$$$$$$$$$$RECURSIVE CALL$$$$$$$$$$$$$$$$$$$$$$$$"
                 ciscotelnet(ip3,connection)
             
-            print "\n NEXT IP 3= ", ip3
-            print "!!!!!!!!!!!!!!!!!11ip3 is  in visited-IPip!!!!!!!!!!!!!!!!!"
+            #print "\n NEXT IP 3= ", ip3
+            #print "!!!!!!!!!!!!!!!!!11ip3 is  in visited-IPip!!!!!!!!!!!!!!!!!"
 #            else:
 #                connection.write("exit" + '\n')   
 
