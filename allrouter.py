@@ -17,11 +17,22 @@ global visited_ip
 global entire_ip    #[[R1,192.168.2.1],[],[],...]
 global ip_neighbor
 global telnet_fail_ip
+global username
+global password
+
+global TELNET_PORT 
+global TELNET_TIMEOUT 
+global READ_TIMEOUT 
+
+username="teopy"
+password="python"
 routerlist=[]
 visited_ip=[]
 entire_ip=[]
 ip_neighbor=[]
 telnet_fail_ip=[]
+
+
 
 def open_telnet_conn(ip):
     #Change exception message
@@ -36,7 +47,6 @@ def open_telnet_conn(ip):
         userfile.close()
         print "username: ", username
         print "password: ", password
-        
         
         
         TELNET_PORT = 23
@@ -77,7 +87,15 @@ def open_telnet_conn(ip):
             time.sleep(0.5)
             output2=connection.read_very_eager()
             regular_expression2(output2,routername)
-            
+    
+            print "routerlist : ", routerlist
+            print "visited_ip : ", visited_ip
+            print "failed telnet : ", telnet_fail_ip
+
+     
+            for ip in ip_neighbor:
+                print "\n\n**********************main ip neighbor call : ", ip
+                ciscotelnet(ip, connection)
                              
             
             #Closing the connection
@@ -94,6 +112,61 @@ def open_telnet_conn(ip):
              
 
    
+
+def ciscotelnet(ip,connection):
+    print "\n NEXT IP 1 = ", ip
+    
+    connection.write("telnet " + ip + "\n")
+    
+    output = connection.read_until("name:",5)
+    connection.write(username + "\n")
+    output = connection.read_until("word:", 5)
+    connection.write(password + "\n")
+    time.sleep(0.5)	
+ #   print "outputtest 2 : ", output
+    print "Logging onto %s" %ip
+    
+
+    connection.write("\n")
+    time.sleep(0.5)
+    output = connection.read_until("\n:", 5)
+    routername=output.splitlines(1)[2][:-1]
+    
+    
+    if routername not in routerlist:
+        routerlist.append(routername)
+     
+        connection.write("show ip interface brief" + '\n')
+        time.sleep(0.5)
+        output1 = connection.read_very_eager()
+        regular_expression(output1,routername)
+        #print output1
+        #return output1
+        
+        connection.write("show ip route"+'\n')
+        time.sleep(0.5)
+        output2=connection.read_very_eager()
+        regular_expression2(output2,routername)
+        print "routerlist : ", routerlist
+        print "visited_ip : ", visited_ip
+        print "failed telnet : ", telnet_fail_ip
+
+        for ip3 in ip_neighbor:
+            if ip3 not in visited_ip:
+                print "\n NEXT IP 2 = ", ip3 
+                print "$$$$$$$$$$$$$$$$$$$$RECURSIVE CALL$$$$$$$$$$$$$$$$$$$$$$$$"
+                ciscotelnet(ip3,connection)
+            
+            print "\n NEXT IP 3= ", ip3
+            print "!!!!!!!!!!!!!!!!!11ip3 is  in visited-IPip!!!!!!!!!!!!!!!!!"
+#            else:
+#                connection.write("exit" + '\n')   
+
+
+            
+
+
+
 
 def regular_expression(input_str,router):
     try:
@@ -154,9 +227,7 @@ def regular_expression2(input_str,router):
 
         print "ipneighbor : ", ip_neighbor
         
-        for ip3 in ip_neighbor:
-            if ip3 not in visited_ip:
-                open_telnet_conn(ip3)
+        
         
        
             
