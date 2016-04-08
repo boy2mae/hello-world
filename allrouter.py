@@ -48,26 +48,35 @@ def open_telnet_conn(ip):
     #Change exception message
     try:
         #Define telnet parameters
-        
-        userfile=open("userfile.txt","r")
+        print "test"
+        try :
+            userfile=open("c:/Python27/allrouter/userfile.txt","r")
+        except IOError:
+            sys.exit()
+
+        print "test2"
+
         p=userfile.readlines()
         username=p[0].split(',')[0]
         password=p[0].split(',')[1].rstrip('\n')
-        
+
+        print "test0"
         userfile.close()
         print "username: ", username
         print "password: ", password
         
-        
-        
+
+
         TELNET_PORT = 23
         TELNET_TIMEOUT = 5
         READ_TIMEOUT = 5
         
         #Logging into device
+        print "test1"
         connection = telnetlib.Telnet(ip, TELNET_PORT, TELNET_TIMEOUT)
-        
+        print "test2"
         output = connection.read_until("name:", READ_TIMEOUT)
+
         connection.write(username + "\n")
         
         output = connection.read_until("word:", READ_TIMEOUT)
